@@ -1,0 +1,65 @@
+[project]
+name = "nbcat"
+version = "0.1.0"
+description = "cat for jupyter notebooks"
+authors = [
+    { name = "Akop Kesheshyan", email = "devnull@akop.dev" }
+]
+maintainers = [
+    { name = "Akop Kesheshyan", email = "devnull@akop.dev" }
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "aiohttp",
+    "pydantic",
+]
+
+[project.optional-dependencies]
+dev = [
+    "aioresponses",
+    "ruff",
+    "pytest",
+    "pytest-asyncio",
+    "pytest-mock",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/akopdev/nbcat"
+Repository = "https://github.com/akopdev/nbcat"
+
+[project.scripts]
+nbcat = "nbcat.cli:main"
+
+[pytest]
+mock_use_standalone_module = true
+
+[tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
+testpaths = "tests/"
+
+[tool.ruff]
+exclude = [
+    ".venv",
+    "build",
+    "dist",
+    "migrations",
+    "__init__.py"
+]
+include = ["*.py", "*.pyx"]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "D"]
+ignore = [
+  "D100", "D101", "D102", "D103", "D104", "D105", "D106", "D107"
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
