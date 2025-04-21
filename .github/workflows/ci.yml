@@ -34,7 +34,9 @@ jobs:
     if: ${{ github.ref == 'refs/heads/main' && success() }}
     needs: build
     runs-on: ubuntu-latest
-
+    environment: pypi
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -51,4 +53,4 @@ jobs:
         run: ls -la dist/
 
       - name: Publish
-        run: make deploy token=${{ secrets.PYPI_API_TOKEN }}
+        uses: pypa/gh-action-pypi-publish@release/v1
