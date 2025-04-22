@@ -2,7 +2,6 @@ import os
 import urllib.request
 from pathlib import Path
 
-from pydantic import AnyHttpUrl, ValidationError
 
 
 from rich import box
@@ -20,20 +19,14 @@ from rich.text import Text
 class Nbcat:
     def __init__(self, filename: str, theme: str = "ansi_dark") -> None:
         self.theme = theme
-        if not os.path.isfile(filename):
-            try:
-                self.file = AnyHttpUrl(url=filename)
-            except ValidationError:
-                raise Exception(f"{filename}: No such file or directory.")
-        else:
-            self.file = filename
+        self.file = filename
 
-    def read(self, source: str | AnyHttpUrl) -> Notebook:
-        if isinstance(source, AnyHttpUrl):
+    def read(self, source: str) -> Notebook:
+        if os.path.isfile(source):
+            content = Path(source).read_text(encoding="utf-8")
+        else:
             with urllib.request.urlopen(str(source)) as response:
                 content = response.read().decode("utf-8")
-        else:
-            content = Path(source).read_text(encoding="utf-8")
         return Notebook.model_validate_json(content)
 
     def render_source(self, cell: Cell):
@@ -50,15 +43,15 @@ class Nbcat:
         nb = self.read(self.file)
         console = Console()
         layout = Table.grid(padding=1)
-        layout.add_column(no_wrap=True)
+        layout.add_column(no_wrap=True, width=5)
         layout.add_column()
         for cell in nb.cells:
             source = self.render_source(cell)
             layout.add_row(
-                f"In [{cell.execution_count}]:" if cell.execution_count else None, source
+                f"[{cell.execution_count}]:" if cell.execution_count else None, source
             )
             if cell.output:
                 layout.add_row(
-                    f"Out [{cell.execution_count}]:" if cell.execution_count else None, cell.output
+                    f"[{cell.execution_count}]:" if cell.execution_count else None, cell.output
                 )
         console.print(layout)

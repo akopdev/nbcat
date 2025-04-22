@@ -10,12 +10,14 @@ class BaseOutput(BaseModel):
 
 class StreamOutput(BaseOutput):
     name: str
-    text: list[str]
+    text: list[str] | str
 
     @computed_field
     @property
     def output(self) -> str:
-        return "".join(self.text)
+        if isinstance(self.text, list):
+            return "".join(self.text)
+        return self.text
 
 
 class DisplayDataOutput(BaseOutput):
@@ -41,14 +43,16 @@ class ErrorOutput(BaseOutput):
 
 class Cell(BaseModel):
     cell_type: CellType
-    source: list[str]
+    source: list[str] | str
     execution_count: int | None = None
     outputs: list[StreamOutput | DisplayDataOutput | ErrorOutput] = []
 
     @computed_field
     @property
     def input(self) -> str:
-        return "".join(self.source)
+        if isinstance(self.source, list):
+            return "".join(self.source)
+        return self.source
 
     @computed_field
     @property
