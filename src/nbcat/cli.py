@@ -1,6 +1,8 @@
 import argparse
 import sys
 
+from pydantic import ValidationError
+
 from . import __version__
 from .nbcat import Nbcat
 
@@ -22,6 +24,8 @@ def main():
         args = parser.parse_args()
         nbcat = Nbcat(args.file)
         nbcat.print()
+    except ValidationError as e:
+        sys.exit(f"nbcat: Invalid notebook: {e}")
     except Exception as e:
         sys.exit(f"nbcat: {e}")
 

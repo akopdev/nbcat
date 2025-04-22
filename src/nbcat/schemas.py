@@ -22,6 +22,7 @@ class StreamOutput(BaseOutput):
 
 class DisplayDataOutput(BaseOutput):
     data: dict[str, Any]
+    execution_count: int | None = None
 
     @computed_field
     @property
