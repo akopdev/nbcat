@@ -4,7 +4,6 @@ from pathlib import Path
 
 from pydantic import AnyHttpUrl, ValidationError
 
-from nbcat.schemas import Notebook
 
 from rich import box
 from rich.markdown import Markdown
@@ -12,7 +11,9 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.console import Console
 from rich.table import Table
-from rich.text import Text
+
+from nbcat.enums import CellType
+from nbcat.schemas import Notebook, Cell
 
 
 class Nbcat:
@@ -26,7 +27,7 @@ class Nbcat:
         else:
             self.file = filename
 
-    def read(self, source: str | AnyHttpUrl):
+    def read(self, source: str | AnyHttpUrl) -> Notebook:
         if isinstance(source, AnyHttpUrl):
             with urllib.request.urlopen(str(source)) as response:
                 content = response.read().decode("utf-8")
@@ -34,13 +35,13 @@ class Nbcat:
             content = Path(source).read_text(encoding="utf-8")
         return Notebook.model_validate_json(content)
 
-    def render_source(self, cell):
-        if cell.cell_type == "markdown":
+    def render_source(self, cell: Cell):
+        if cell.cell_type == CellType.MARKDOWN:
             return Markdown("".join(cell.source))
-        elif cell.cell_type == "code":
+        elif cell.cell_type == CellType.CODE:
             return Panel(Syntax("".join(cell.source), "python", line_numbers=True, theme=self.theme), box=box.SQUARE)
 
-    def render_output(self, cell):
+    def render_output(self, cell: Cell):
         if cell.outputs:
             outputs = ""
             for output in cell.outputs:
