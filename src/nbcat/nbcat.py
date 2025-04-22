@@ -37,16 +37,11 @@ class Nbcat:
 
     def render_source(self, cell: Cell):
         if cell.cell_type == CellType.MARKDOWN:
-            return Markdown("".join(cell.source))
+            return Markdown(cell.input)
         elif cell.cell_type == CellType.CODE:
-            return Panel(Syntax("".join(cell.source), "python", line_numbers=True, theme=self.theme), box=box.SQUARE)
-
-    def render_output(self, cell: Cell):
-        if cell.outputs:
-            outputs = ""
-            for output in cell.outputs:
-                outputs += "".join(output.text)
-            return outputs
+            return Panel(
+                Syntax(cell.input, "python", line_numbers=True, theme=self.theme), box=box.SQUARE
+            )
 
     def print(self):
         nb = self.read(self.file)
@@ -56,8 +51,11 @@ class Nbcat:
         layout.add_column()
         for cell in nb.cells:
             source = self.render_source(cell)
-            output = self.render_output(cell)
-            layout.add_row(f"In [{cell.execution_count}]:" if cell.execution_count else None, source)
-            if output:
-                layout.add_row(f"Out [{cell.execution_count}]:" if cell.execution_count else None, output)
+            layout.add_row(
+                f"In [{cell.execution_count}]:" if cell.execution_count else None, source
+            )
+            if cell.output:
+                layout.add_row(
+                    f"Out [{cell.execution_count}]:" if cell.execution_count else None, cell.output
+                )
         console.print(layout)
