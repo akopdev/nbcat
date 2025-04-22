@@ -6,6 +6,7 @@ from .enums import CellType, OutputType
 
 class BaseOutput(BaseModel):
     output_type: OutputType
+    execution_count: int | None = None
 
 
 class StreamOutput(BaseOutput):
@@ -22,7 +23,6 @@ class StreamOutput(BaseOutput):
 
 class DisplayDataOutput(BaseOutput):
     data: dict[str, Any]
-    execution_count: int | None = None
 
     @computed_field
     @property
@@ -54,16 +54,6 @@ class Cell(BaseModel):
         if isinstance(self.source, list):
             return "".join(self.source)
         return self.source
-
-    @computed_field
-    @property
-    def output(self) -> str:
-        result = ""
-        if self.outputs:
-            for o in self.outputs:
-                if o.output:
-                    result += o.output
-        return result
 
 
 class Notebook(BaseModel):

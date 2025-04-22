@@ -3,7 +3,6 @@ import urllib.request
 from pathlib import Path
 
 
-
 from rich import box
 from rich.markdown import Markdown
 from rich.panel import Panel
@@ -47,11 +46,11 @@ class Nbcat:
         layout.add_column()
         for cell in nb.cells:
             source = self.render_source(cell)
-            layout.add_row(
-                f"[{cell.execution_count}]:" if cell.execution_count else None, source
-            )
-            if cell.output:
-                layout.add_row(
-                    f"[{cell.execution_count}]:" if cell.execution_count else None, cell.output
-                )
+            layout.add_row(f"[{cell.execution_count}]:" if cell.execution_count else None, source)
+            if cell.outputs:
+                for o in cell.outputs:
+                    if o.output:
+                        layout.add_row(
+                            f"[{o.execution_count}]:" if o.execution_count else None, o.output
+                        )
         console.print(layout)
