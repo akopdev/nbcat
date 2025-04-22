@@ -13,7 +13,7 @@ class CodeCell(BaseModel):
     cell_type: Literal["code"]
     id: str
     source: list[str]
-    execution_count: int | None
+    execution_count: int | None = None
     outputs: list[OutputStream]
 
 
@@ -21,7 +21,8 @@ class MarkdownCell(BaseModel):
     cell_type: Literal["markdown"]
     id: str
     source: list[str]
-
+    execution_count: int | None = None
+    outputs: list[OutputStream] | None = []
 
 class Notebook(BaseModel):
     cells: list[CodeCell | MarkdownCell]

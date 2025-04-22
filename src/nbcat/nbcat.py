@@ -6,10 +6,13 @@ from pydantic import AnyHttpUrl, ValidationError
 
 from nbcat.schemas import Notebook
 
+from rich import box
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.console import Console
+from rich.table import Table
+from rich.text import Text
 
 
 class Nbcat:
@@ -31,12 +34,29 @@ class Nbcat:
             content = Path(source).read_text(encoding="utf-8")
         return Notebook.model_validate_json(content)
 
+    def render_source(self, cell):
+        if cell.cell_type == "markdown":
+            return Markdown("".join(cell.source))
+        elif cell.cell_type == "code":
+            return Panel(Syntax("".join(cell.source), "python", line_numbers=True, theme=self.theme), box=box.SQUARE)
+
+    def render_output(self, cell):
+        if cell.outputs:
+            outputs = ""
+            for output in cell.outputs:
+                outputs += "".join(output.text)
+            return outputs
+
     def print(self):
         nb = self.read(self.file)
         console = Console()
+        layout = Table.grid(padding=1)
+        layout.add_column(no_wrap=True)
+        layout.add_column()
         for cell in nb.cells:
-            if cell.cell_type == "markdown":
-                stdout = Markdown("".join(cell.source))
-            elif cell.cell_type == "code":
-                stdout = Panel(Syntax("".join(cell.source), "python", theme=self.theme))
-            console.print(stdout)
+            source = self.render_source(cell)
+            output = self.render_output(cell)
+            layout.add_row(f"In [{cell.execution_count}]:" if cell.execution_count else None, source)
+            if output:
+                layout.add_row(f"Out [{cell.execution_count}]:" if cell.execution_count else None, output)
+        console.print(layout)
