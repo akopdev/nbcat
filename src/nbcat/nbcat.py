@@ -14,6 +14,7 @@ from rich.table import Table
 
 from nbcat.enums import CellType
 from nbcat.schemas import Notebook, Cell
+from rich.text import Text
 
 
 class Nbcat:
@@ -42,6 +43,8 @@ class Nbcat:
             return Panel(
                 Syntax(cell.input, "python", line_numbers=True, theme=self.theme), box=box.SQUARE
             )
+        elif cell.cell_type == CellType.RAW:
+            return Text(cell.input)
 
     def print(self):
         nb = self.read(self.file)
