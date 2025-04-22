@@ -1,22 +1,42 @@
-from datetime import datetime
+import os
+import urllib.request
+from pathlib import Path
 
-import aiohttp
+from pydantic import AnyHttpUrl, ValidationError
 
+from nbcat.schemas import Notebook
 
-async def my_func(name) -> str:
-    """Get message from remote server."""
-    async with aiohttp.ClientSession() as session:
-        async with session.get("https://example.com/api.json", params={"name": name}) as response:
-            data = await response.json()
-            return data["message"]
-
-
-def now() -> datetime:
-    """Ready to mock method for date extraction."""
-    return datetime.now()
+from rich.markdown import Markdown
+from rich.panel import Panel
+from rich.syntax import Syntax
+from rich.console import Console
 
 
-def get_time() -> str:
-    """Return today's date."""
-    date = now()
-    return f"Today is {date.strftime('%A, %B %d, %Y')}"
+class Nbcat:
+    def __init__(self, filename: str, theme: str = "ansi_dark") -> None:
+        self.theme = theme
+        if not os.path.isfile(filename):
+            try:
+                self.file = AnyHttpUrl(url=filename)
+            except ValidationError:
+                raise Exception(f"{filename}: No such file or directory.")
+        else:
+            self.file = filename
+
+    def read(self, source: str | AnyHttpUrl):
+        if isinstance(source, AnyHttpUrl):
+            with urllib.request.urlopen(str(source)) as response:
+                content = response.read().decode("utf-8")
+        else:
+            content = Path(source).read_text(encoding="utf-8")
+        return Notebook.model_validate_json(content)
+
+    def print(self):
+        nb = self.read(self.file)
+        console = Console()
+        for cell in nb.cells:
+            if cell.cell_type == "markdown":
+                stdout = Markdown("".join(cell.source))
+            elif cell.cell_type == "code":
+                stdout = Panel(Syntax("".join(cell.source), "python", theme=self.theme))
+            console.print(stdout)
