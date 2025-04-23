@@ -12,7 +12,7 @@ license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "aiohttp",
+    "requests",
     "pydantic",
     "rich",
 ]
@@ -32,7 +32,7 @@ Homepage = "https://github.com/akopdev/nbcat"
 Repository = "https://github.com/akopdev/nbcat"
 
 [project.scripts]
-nbcat = "nbcat.cli:main"
+nbcat = "nbcat.main:main"
 
 [pytest]
 mock_use_standalone_module = true
