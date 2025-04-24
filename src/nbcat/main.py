@@ -55,7 +55,7 @@ def read_notebook(fp: str) -> Notebook:
         except requests.RequestException as e:
             raise NotebookNotFoundError(f"Unable to fetch remote notebook: {e}")
     else:
-        raise NotebookNotFoundError("Notebook not found")
+        raise NotebookNotFoundError(f"Notebook not found: {fp}")
     try:
         return Notebook.model_validate_json(content)
     except ValidationError as e:

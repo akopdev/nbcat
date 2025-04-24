@@ -80,7 +80,7 @@ class Cell(BaseModel):
 
 
 class Notebook(BaseModel):
-    cells: list[Cell] | None = []
+    cells: list[Cell] = []
     nbformat: int
 
     @model_validator(mode="before")
