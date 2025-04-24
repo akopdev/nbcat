@@ -1,47 +1,38 @@
 # 📦 nbcat
 
-cat for jupyter notebooks
-
-[![License](https://img.shields.io/github/license/akopdev/nbcat)](./LICENSE)
-[![Build](https://github.com/akopdev/nbcat/actions/workflows/ci.yml/badge.svg)](https://github.com/akopdev/nbcat/actions)
-
----
+`nbcat` lets you preview Jupyter notebooks directly in your terminal. Think of it as `cat`, but for `.ipynb` files.
 
 ## 🚀 Features
 
-- ✅ Clean, minimal API
-- 🧰 Easily extensible
-- 🧪 Fully tested and type-annotated
-- ⚡ Fast and lightweight
-- 📦 Available on PyPI
-
----
+- Fast and lightweight with minimal external dependencies
+- Preview remote notebooks without downloading them
+- Supports for all Jupyter notebook versions - including legacy formats 
 
 ## 📦 Installation
 
-Install with [uv](https://github.com/astral-sh/uv)
+From the command line using pip:
 
 ```bash
-uv pip install nbcat
+pip install nbcat
 ```
-
-To install the latest development version:
-
-```bash
-uv pip install git+https://github.com/akopdev/nbcat.git
-```
-
----
 
 ## 🛠️ Quickstart
 
-```python
-# example of using the package
+```bash
+$ nbcat notebook.ipynb
 ```
 
-For more examples, check out the [`examples/`](./examples/) folder.
+You can pass URLs as well.
 
----
+```bash
+$ nbcat https://raw.githubusercontent.com/akopdev/nbcat/refs/heads/main/tests/assets/test4.ipynb
+```
+
+Example use case with `fzf` command that lists all `.ipynb` files and uses `nbcat` for previewing them:
+
+```bash
+find . -type f -name "*.ipynb" | fzf --preview 'nbcat {}'
+```
 
 ## 🧪 Testing & Development
 
@@ -54,28 +45,16 @@ make test
 Check code quality:
 
 ```bash
-make lint
+make format lint
 ```
-
-Format code:
-
-```bash
-make format
-```
-
----
 
 ## 🙌 Contributing
 
 Contributions are welcome! Please open an issue or [pull request](https://github.com/akopdev/nbcat/pulls).
 
----
-
 ## 📄 License
 
 Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
-
----
 
 ## 🔗 Useful Links
 
@@ -85,4 +64,4 @@ Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more informati
 
 ---
 
-> Made with ❤️ by [Akop Kesheshyan](https://github.com/akopdev)
+Made with ❤️ by [Akop Kesheshyan](https://github.com/akopdev)
