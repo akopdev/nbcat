@@ -5,6 +5,7 @@ class CellType(str, Enum):
     MARKDOWN = "markdown"
     CODE = "code"
     RAW = "raw"
+    HEADING = "heading"
 
 
 class OutputType(str, Enum):
@@ -12,3 +13,4 @@ class OutputType(str, Enum):
     DISPLAY_DATA = "display_data"
     EXECUTE_RESULT = "execute_result"
     ERROR = "error"
+    PYOUT = "pyout"

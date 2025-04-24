@@ -62,7 +62,7 @@ def read_notebook(fp: str) -> Notebook:
         raise InvalidNotebookFormatError(f"Invalid notebook: {e}")
 
 
-def render_cell(cell: Cell) -> list[tuple[str, RenderableType]]:
+def render_cell(cell: Cell) -> list[tuple[str | None, RenderableType]]:
     """
     Render the content of a notebook cell for display.
 
@@ -82,20 +82,22 @@ def render_cell(cell: Cell) -> list[tuple[str, RenderableType]]:
         return Markdown(input)
 
     def _render_code(input: str) -> Panel:
-        return Panel(
-            Syntax(input, "python", line_numbers=True, theme="ansi_dark"), box=box.SQUARE
-        )
+        return Panel(Syntax(input, "python", line_numbers=True, theme="ansi_dark"), box=box.SQUARE)
 
     def _render_raw(input: str) -> Text:
+        return Text(input)
+
+    def _render_heading(input: str) -> Text:
         return Text(input)
 
     RENDERERS = {
         CellType.MARKDOWN: _render_markdown,
         CellType.CODE: _render_code,
         CellType.RAW: _render_raw,
+        CellType.HEADING: _render_heading,
     }
 
-    rows = []
+    rows: list[tuple[str | None, RenderableType]] = []
     renderer = RENDERERS.get(cell.cell_type)
     source = renderer(cell.input) if renderer else None
     if source:
@@ -107,7 +109,7 @@ def render_cell(cell: Cell) -> list[tuple[str, RenderableType]]:
             )
         )
 
-    for o in cell.outputs or []:
+    for o in cell.outputs:
         if o.output:
             label = f"[blue][{o.execution_count}][/]:" if o.execution_count else None
             rows.append(

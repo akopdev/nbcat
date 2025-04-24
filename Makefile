@@ -33,9 +33,10 @@ deploy: build ## Publish package
 	$(UV) publish --token $(token)
 
 lint: ## Run linter over code base and auto resole minor issues
-	$(RUFF) check --fix
+	$(RUFF) check
 
 format: ## Format the source code according to defined coding style
+	$(RUFF) check --fix-only
 	$(RUFF) format
 
 clean: ## Remove all file artifacts

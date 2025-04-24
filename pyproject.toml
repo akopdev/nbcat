@@ -19,10 +19,9 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "aioresponses",
     "ruff",
     "pytest",
-    "pytest-asyncio",
+    "responses",
     "pytest-mock",
     "pytest-cov",
 ]
