@@ -12,7 +12,6 @@ class BaseOutput(BaseModel):
 
 
 class StreamOutput(BaseOutput):
-    name: str
     text: list[str] | str
 
     @computed_field
