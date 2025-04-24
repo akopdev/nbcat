@@ -2,7 +2,9 @@ import argparse
 import sys
 from pathlib import Path
 
+import argcomplete
 import requests
+from argcomplete.completers import FilesCompleter
 from pydantic import ValidationError
 from rich import box
 from rich.console import Console, RenderableType
@@ -148,7 +150,9 @@ def main():
         description="cat for Jupyter Notebooks",
         argument_default=argparse.SUPPRESS,
     )
-    parser.add_argument("file", help="Path or URL to a .ipynb notebook", type=str)
+    parser.add_argument(
+        "file", help="Path or URL to a .ipynb notebook", type=str
+    ).completer = FilesCompleter()
     parser.add_argument(
         "--version",
         help="print version information and quite",
@@ -157,6 +161,7 @@ def main():
     )
 
     try:
+        argcomplete.autocomplete(parser)
         args = parser.parse_args()
         notebook = read_notebook(args.file)
         print_notebook(notebook)
