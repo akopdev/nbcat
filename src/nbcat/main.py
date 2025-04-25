@@ -84,19 +84,16 @@ def render_cell(cell: Cell) -> list[tuple[str | None, RenderableType]]:
         return Markdown(input)
 
     def _render_code(input: str) -> Panel:
-        return Panel(Syntax(input, "python", line_numbers=True, theme="ansi_dark"), box=box.SQUARE)
+        return Panel(Syntax(input, "python", theme="ansi_dark"), box=box.SQUARE)
 
     def _render_raw(input: str) -> Text:
-        return Text(input)
-
-    def _render_heading(input: str) -> Text:
         return Text(input)
 
     RENDERERS = {
         CellType.MARKDOWN: _render_markdown,
         CellType.CODE: _render_code,
         CellType.RAW: _render_raw,
-        CellType.HEADING: _render_heading,
+        CellType.HEADING: _render_markdown,
     }
 
     rows: list[tuple[str | None, RenderableType]] = []

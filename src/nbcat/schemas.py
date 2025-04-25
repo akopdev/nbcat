@@ -70,7 +70,7 @@ class Cell(BaseModel):
     @property
     def input(self) -> str:
         if self.cell_type == CellType.HEADING and self.level is not None:
-            return f"{'#' * self.level} {self.source}"
+            return f"{'#' * self.level} {''.join(self.source)}"
 
         if isinstance(self.source, list):
             return "".join(self.source)
@@ -87,7 +87,7 @@ class Notebook(BaseModel):
     def handle_format_versions(cls, data: dict[str, Any]) -> dict[str, Any]:
         if data.get("worksheets"):
             try:
-                data["cells"] = data.get("worksheets")[0].get("cells", [])
+                data["cells"] = data.get("worksheets", [{"cells": []}])[0].get("cells", [])
             except (KeyError, IndexError, TypeError) as e:
                 print(e)
                 raise InvalidNotebookFormatError(f"Invalid v3 notebook structure: {e}")

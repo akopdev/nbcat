@@ -13,7 +13,7 @@ from nbcat.schemas import Cell, StreamOutput
         ("markdown", "# Heading", Markdown),
         ("code", "print('Hello')", Panel),
         ("raw", "Raw content", Text),
-        ("heading", "Heading text", Text),
+        ("heading", "Heading text", Markdown),
     ],
 )
 def test_render_cell_input_rendering(cell_type: str, source: str, expected):
