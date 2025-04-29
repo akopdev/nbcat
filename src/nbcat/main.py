@@ -26,7 +26,7 @@ from .schemas import Cell, Notebook
 console = Console()
 
 
-def read_notebook(fp: str) -> Notebook:
+def read_notebook(fp: str, debug: bool = False) -> Notebook:
     """
     Load and parse a Jupyter notebook from a local file or remote URL.
 
@@ -61,6 +61,8 @@ def read_notebook(fp: str) -> Notebook:
     try:
         return Notebook.model_validate_json(content)
     except ValidationError as e:
+        if not debug:
+            raise InvalidNotebookFormatError("Failed to read notebook")
         raise InvalidNotebookFormatError(f"Invalid notebook: {e}")
 
 
@@ -156,11 +158,14 @@ def main():
         action="version",
         version=__version__,
     )
+    parser.add_argument(
+        "--debug", help="enable extended error output", action="store_true", default=False
+    )
 
     try:
         argcomplete.autocomplete(parser)
         args = parser.parse_args()
-        notebook = read_notebook(args.file)
+        notebook = read_notebook(args.file, debug=args.debug)
         print_notebook(notebook)
     except Exception as e:
         sys.exit(f"nbcat: {e}")
