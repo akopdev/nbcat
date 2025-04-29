@@ -1,6 +1,7 @@
 import argparse
 import sys
 from pathlib import Path
+from typing import Union
 
 import argcomplete
 import requests
@@ -66,7 +67,7 @@ def read_notebook(fp: str, debug: bool = False) -> Notebook:
         raise InvalidNotebookFormatError(f"Invalid notebook: {e}")
 
 
-def render_cell(cell: Cell) -> list[tuple[str | None, RenderableType]]:
+def render_cell(cell: Cell) -> list[tuple[Union[str, None], RenderableType]]:
     """
     Render the content of a notebook cell for display.
 
@@ -98,7 +99,7 @@ def render_cell(cell: Cell) -> list[tuple[str | None, RenderableType]]:
         CellType.HEADING: _render_markdown,
     }
 
-    rows: list[tuple[str | None, RenderableType]] = []
+    rows: list[tuple[Union[str, None], RenderableType]] = []
     renderer = RENDERERS.get(cell.cell_type)
     source = renderer(cell.input) if renderer else None
     if source:

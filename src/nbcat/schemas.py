@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Union
 
 from pydantic import BaseModel, computed_field, model_validator
 
@@ -8,11 +8,11 @@ from .exceptions import InvalidNotebookFormatError
 
 class BaseOutput(BaseModel):
     output_type: OutputType
-    execution_count: int | None = None
+    execution_count: Union[int, None] = None
 
 
 class StreamOutput(BaseOutput):
-    text: list[str] | str
+    text: Union[list[str], str]
 
     @computed_field
     @property
@@ -54,10 +54,10 @@ class PyoutDataOutput(BaseOutput):
 
 class Cell(BaseModel):
     cell_type: CellType
-    source: list[str] | str
-    level: int | None = None
-    execution_count: int | None = None
-    outputs: list[StreamOutput | DisplayDataOutput | ErrorOutput | PyoutDataOutput] = []
+    source: Union[list[str], str]
+    level: Union[int, None] = None
+    execution_count: Union[int, None] = None
+    outputs: list[Union[StreamOutput, DisplayDataOutput, ErrorOutput, PyoutDataOutput]] = []
 
     @model_validator(mode="before")
     @classmethod

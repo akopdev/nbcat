@@ -1,6 +1,6 @@
 [project]
 name = "nbcat"
-version = "0.9.3"
+version = "0.9.4"
 description = "cat for jupyter notebooks"
 authors = [
     { name = "Akop Kesheshyan", email = "devnull@akop.dev" }
@@ -10,7 +10,7 @@ maintainers = [
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.9"
 dependencies = [
     "argcomplete",
     "requests",
