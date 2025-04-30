@@ -1,4 +1,4 @@
-# 📦 nbcat
+# nbcat
 
 `nbcat` let you preview Jupyter notebooks directly in your terminal. Think of it as `cat`, but for `.ipynb` files.
 
@@ -44,7 +44,7 @@ Example use case with `fzf` command that lists all `.ipynb` files and uses `nbca
 find . -type f -name "*.ipynb" | fzf --preview 'nbcat {}'
 ```
 
-## 🧪 Testing & Development
+## Testing & Development
 
 Run the tests:
 
