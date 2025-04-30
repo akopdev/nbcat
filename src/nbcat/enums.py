@@ -14,3 +14,10 @@ class OutputType(str, Enum):
     EXECUTE_RESULT = "execute_result"
     ERROR = "error"
     PYOUT = "pyout"
+
+
+class OutputCellType(str, Enum):
+    PLAIN = "plain"
+    HTML = "html"
+    IMAGE = "image"
+    JSON = "json"

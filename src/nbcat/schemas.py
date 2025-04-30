@@ -2,7 +2,7 @@ from typing import Any, Union
 
 from pydantic import BaseModel, computed_field, model_validator
 
-from .enums import CellType, OutputType
+from .enums import CellType, OutputCellType, OutputType
 from .exceptions import InvalidNotebookFormatError
 
 
@@ -11,15 +11,19 @@ class BaseOutput(BaseModel):
     execution_count: Union[int, None] = None
 
 
+class CellOutput(BaseModel):
+    output_type: OutputCellType
+    text: str
+
+
 class StreamOutput(BaseOutput):
     text: Union[list[str], str]
 
     @computed_field
     @property
-    def output(self) -> str:
-        if isinstance(self.text, list):
-            return "".join(self.text)
-        return self.text
+    def output(self) -> CellOutput:
+        text = "".join(self.text) if isinstance(self.text, list) else self.text
+        return CellOutput(output_type=OutputCellType.PLAIN, text=text)
 
 
 class DisplayDataOutput(BaseOutput):
@@ -27,9 +31,18 @@ class DisplayDataOutput(BaseOutput):
 
     @computed_field
     @property
-    def output(self) -> str:
-        # TODO: add support for rich display outputs
-        return ""
+    def output(self) -> Union[CellOutput, None]:
+        data_type_map = {
+            "text/html": OutputCellType.HTML,
+            "text/png": OutputCellType.IMAGE,
+            "text/plain": OutputCellType.PLAIN,
+            "application/vnd.raw.v1+json": OutputCellType.JSON,
+        }
+        for data_type, output_type in data_type_map.items():
+            data = self.data.get(data_type)
+            if data:
+                text = "".join(data) if isinstance(data, list) else str(data)
+                return CellOutput(output_type=output_type, text=text)
 
 
 class ErrorOutput(BaseOutput):
@@ -39,8 +52,8 @@ class ErrorOutput(BaseOutput):
 
     @computed_field
     @property
-    def output(self) -> str:
-        return "\n".join(self.traceback)
+    def output(self) -> CellOutput:
+        return CellOutput(output_type=OutputCellType.PLAIN, text="\n".join(self.traceback))
 
 
 class PyoutDataOutput(BaseOutput):
@@ -48,8 +61,8 @@ class PyoutDataOutput(BaseOutput):
 
     @computed_field
     @property
-    def output(self) -> str:
-        return "\n".join(self.text)
+    def output(self) -> CellOutput:
+        return CellOutput(output_type=OutputCellType.PLAIN, text="\n".join(self.text))
 
 
 class Cell(BaseModel):

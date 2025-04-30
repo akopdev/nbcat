@@ -22,7 +22,7 @@ def test_render_cell_input_rendering(cell_type: str, source: str, expected):
 
     assert len(rendered) == 1
     label, content = rendered[0]
-    assert label == "[green][42][/]:"
+    assert label == "[green][42][/]"
     assert isinstance(content, expected)
 
 
@@ -44,11 +44,11 @@ def test_render_cell_with_outputs():
     assert rendered[0][0] is None
     assert isinstance(rendered[0][1], Panel)
 
-    assert rendered[1][0] == "[blue][7][/]:"
-    assert isinstance(rendered[1][1], str)
+    assert rendered[1][0] == "[blue][7][/]"
+    assert isinstance(rendered[1][1], Text)
 
     assert rendered[2][0] is None
-    assert isinstance(rendered[2][1], str)
+    assert isinstance(rendered[2][1], Text)
 
 
 def test_render_cell_skips_empty_outputs():
@@ -63,5 +63,5 @@ def test_render_cell_skips_empty_outputs():
     rendered = render_cell(cell)
 
     assert len(rendered) == 1  # Only source input is rendered
-    assert rendered[0][0] == "[green][1][/]:"
+    assert rendered[0][0] == "[green][1][/]"
     assert isinstance(rendered[0][1], Text)

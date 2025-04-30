@@ -11,12 +11,13 @@ from rich import box
 from rich.console import Console, RenderableType
 from rich.markdown import Markdown
 from rich.panel import Panel
+from rich.pretty import Pretty
 from rich.syntax import Syntax
 from rich.table import Table
 from rich.text import Text
 
 from . import __version__
-from .enums import CellType
+from .enums import CellType, OutputCellType
 from .exceptions import (
     InvalidNotebookFormatError,
     NotebookNotFoundError,
@@ -92,18 +93,28 @@ def render_cell(cell: Cell) -> list[tuple[Union[str, None], RenderableType]]:
     def _render_raw(input: str) -> Text:
         return Text(input)
 
+    def _render_image(input: str) -> None:
+        return None
+
+    def _render_json(input: str) -> Pretty:
+        return Pretty(input)
+
     RENDERERS = {
         CellType.MARKDOWN: _render_markdown,
         CellType.CODE: _render_code,
         CellType.RAW: _render_raw,
         CellType.HEADING: _render_markdown,
+        OutputCellType.PLAIN: _render_raw,
+        OutputCellType.HTML: _render_markdown,
+        OutputCellType.IMAGE: _render_image,
+        OutputCellType.JSON: _render_json,
     }
 
     rows: list[tuple[Union[str, None], RenderableType]] = []
     renderer = RENDERERS.get(cell.cell_type)
     source = renderer(cell.input) if renderer else None
     if source:
-        label = f"[green][{cell.execution_count}][/]:" if cell.execution_count else None
+        label = f"[green][{cell.execution_count}][/]" if cell.execution_count else None
         rows.append(
             (
                 label,
@@ -113,13 +124,16 @@ def render_cell(cell: Cell) -> list[tuple[Union[str, None], RenderableType]]:
 
     for o in cell.outputs:
         if o.output:
-            label = f"[blue][{o.execution_count}][/]:" if o.execution_count else None
-            rows.append(
-                (
-                    label,
-                    o.output,
+            renderer = RENDERERS.get(o.output.output_type)
+            output = renderer(o.output.text) if renderer else None
+            if output:
+                label = f"[blue][{o.execution_count}][/]" if o.execution_count else None
+                rows.append(
+                    (
+                        label,
+                        output,
+                    )
                 )
-            )
     return rows
 
 

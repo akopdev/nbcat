@@ -1,6 +1,6 @@
 [project]
 name = "nbcat"
-version = "0.9.4"
+version = "0.9.5"
 description = "cat for jupyter notebooks"
 authors = [
     { name = "Akop Kesheshyan", email = "devnull@akop.dev" }
@@ -38,7 +38,6 @@ nbcat = "nbcat.main:main"
 mock_use_standalone_module = true
 
 [tool.pytest.ini_options]
-asyncio_default_fixture_loop_scope = "function"
 testpaths = "tests/"
 
 [tool.ruff]
