@@ -1,14 +1,24 @@
 # 📦 nbcat
 
-`nbcat` lets you preview Jupyter notebooks directly in your terminal. Think of it as `cat`, but for `.ipynb` files.
+`nbcat` let you preview Jupyter notebooks directly in your terminal. Think of it as `cat`, but for `.ipynb` files.
 
-## 🚀 Features
+## Features
 
-- Fast and lightweight with minimal external dependencies
+- Very fast and lightweight with minimal dependencies
 - Preview remote notebooks without downloading them
-- Supports for all Jupyter notebook versions - including legacy formats 
+- Supports for all Jupyter notebook versions, including old legacy formats
 
-## 📦 Installation
+## Motivation
+
+The idea of previewing notebooks in a terminal is not new - there have been many previous attempts to achieve it.  
+However, most are either slow and overengineered with a ton of half-working features, or they're outdated and incompatible with modern Python.
+
+I was looking for a simple tool that let me quickly render Jupyter notebooks without switching context from my terminal window or installing a ton of dependencies.  
+
+Please note, that `nbcat` doesn't aim to replace JupyterLab. If you need a full-featured terminal experience, I recommend checking out [euporie](https://euporie.readthedocs.io/) instead.
+
+
+## Installation
 
 From the command line using pip:
 
@@ -16,7 +26,7 @@ From the command line using pip:
 pip install nbcat
 ```
 
-## 🛠️ Quickstart
+## Quickstart
 
 ```bash
 $ nbcat notebook.ipynb
@@ -48,15 +58,15 @@ Check code quality:
 make format lint
 ```
 
-## 🙌 Contributing
+## Contributing
 
 Contributions are welcome! Please open an issue or [pull request](https://github.com/akopdev/nbcat/pulls).
 
-## 📄 License
+## License
 
 Distributed under the MIT License. See [`LICENSE`](./LICENSE) for more information.
 
-## 🔗 Useful Links
+## Useful Links
 
 - 📘 Documentation: _coming soon_
 - 🐛 Issues: [GitHub Issues](https://github.com/akopdev/nbcat/issues)
