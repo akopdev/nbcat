@@ -2,6 +2,10 @@
 
 `nbcat` let you preview Jupyter notebooks directly in your terminal. Think of it as `cat`, but for `.ipynb` files.
 
+<p align="center">
+  <a href="docs/screenshot.png" target="blank"><img src="docs/screenshot.png" width="400" /></a>
+</p>
+
 ## Features
 
 - Very fast and lightweight with minimal dependencies
