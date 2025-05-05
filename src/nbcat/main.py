@@ -22,6 +22,7 @@ from .exceptions import (
     NotebookNotFoundError,
     UnsupportedNotebookTypeError,
 )
+from .image import Image
 from .markdown import Markdown
 from .schemas import Cell, Notebook
 
@@ -94,7 +95,7 @@ def render_cell(cell: Cell) -> list[tuple[Union[str, None], RenderableType]]:
         return Text(input)
 
     def _render_image(input: str) -> None:
-        return None
+        return Image(input)
 
     def _render_json(input: str) -> Pretty:
         return Pretty(input)

@@ -1,6 +1,6 @@
 [project]
 name = "nbcat"
-version = "0.9.6"
+version = "0.10.0"
 description = "cat for jupyter notebooks"
 authors = [
     { name = "Akop Kesheshyan", email = "devnull@akop.dev" }
@@ -16,6 +16,7 @@ dependencies = [
     "requests",
     "pydantic",
     "rich",
+    "timg",
 ]
 
 [project.optional-dependencies]

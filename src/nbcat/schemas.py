@@ -34,7 +34,7 @@ class DisplayDataOutput(BaseOutput):
     def output(self) -> Union[CellOutput, None]:
         data_type_map = {
             "text/html": OutputCellType.HTML,
-            "text/png": OutputCellType.IMAGE,
+            "image/png": OutputCellType.IMAGE,
             "text/plain": OutputCellType.PLAIN,
             "application/vnd.raw.v1+json": OutputCellType.JSON,
         }
