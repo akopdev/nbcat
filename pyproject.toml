@@ -1,6 +1,6 @@
 [project]
 name = "nbcat"
-version = "0.9.5"
+version = "0.9.6"
 description = "cat for jupyter notebooks"
 authors = [
     { name = "Akop Kesheshyan", email = "devnull@akop.dev" }

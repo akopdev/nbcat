@@ -9,7 +9,6 @@ from argcomplete.completers import FilesCompleter
 from pydantic import ValidationError
 from rich import box
 from rich.console import Console, RenderableType
-from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.pretty import Pretty
 from rich.syntax import Syntax
@@ -23,6 +22,7 @@ from .exceptions import (
     NotebookNotFoundError,
     UnsupportedNotebookTypeError,
 )
+from .markdown import Markdown
 from .schemas import Cell, Notebook
 
 console = Console()
