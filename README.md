@@ -24,10 +24,13 @@ Please note, that `nbcat` doesn't aim to replace JupyterLab. If you need a full-
 
 ## Installation
 
-From the command line using pip:
-
 ```bash
+# Install from PyPI
 pip install nbcat
+
+# Install via Homebrew
+brew tab akopdev/formulas/nbcat
+brew install nbcat
 ```
 
 ## Quickstart
