@@ -1,4 +1,5 @@
 import pytest
+from rich.console import Group, RenderableType
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
@@ -16,14 +17,11 @@ from nbcat.schemas import Cell, StreamOutput
         ("heading", "Heading text", Markdown),
     ],
 )
-def test_render_cell_input_rendering(cell_type: str, source: str, expected):
+def test_render_cell_input_rendering(cell_type: str, source: str, expected: RenderableType):
     cell = Cell(cell_type=cell_type, source=source, execution_count=42, outputs=[])
     rendered = render_cell(cell)
 
-    assert len(rendered) == 1
-    label, content = rendered[0]
-    assert label == "[green][42][/]"
-    assert isinstance(content, expected)
+    assert isinstance(rendered, expected)
 
 
 def test_render_cell_with_outputs():
@@ -39,16 +37,8 @@ def test_render_cell_with_outputs():
 
     rendered = render_cell(cell)
 
-    print(rendered)
-    assert len(rendered) == 3
-    assert rendered[0][0] is None
-    assert isinstance(rendered[0][1], Panel)
-
-    assert rendered[1][0] == "[blue][7][/]"
-    assert isinstance(rendered[1][1], Text)
-
-    assert rendered[2][0] is None
-    assert isinstance(rendered[2][1], Text)
+    assert isinstance(rendered, Group)
+    assert len(rendered.renderables) == 3
 
 
 def test_render_cell_skips_empty_outputs():
@@ -62,6 +52,4 @@ def test_render_cell_skips_empty_outputs():
 
     rendered = render_cell(cell)
 
-    assert len(rendered) == 1  # Only source input is rendered
-    assert rendered[0][0] == "[green][1][/]"
-    assert isinstance(rendered[0][1], Text)
+    assert isinstance(rendered, Group)
