@@ -10,19 +10,22 @@ from timg import METHODS, Renderer
 
 
 class Image:
-    def __init__(self, image: str):
+    def __init__(self, image: str, method: str = "a24h"):
         img = BytesIO(base64.b64decode(image.replace("\n", "")))
         self.image = PilImage.open(img)
-
-    @property
-    def method_class(self):
-        # TODO: auto detect terminal to benefit from sixel protocol support
-        method = "a24h" if system() != "Windows" else "ascii"
-        return METHODS[method]["class"]
+        self.method = method if system() != "Windows" else "ascii"
 
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
-        img = Renderer()
-        img.load_image(self.image)
-        img.resize(shutil.get_terminal_size()[0] - 1)
-        output = img.to_string(self.method_class)
-        yield Text.from_ansi(output)
+        renderer = Renderer()
+        renderer.load_image(self.image)
+        width = shutil.get_terminal_size()[0] - 1
+        if self.method == "sixel":
+            width = width * 6
+
+        renderer.resize(width)
+
+        if self.method == "sixel":
+            renderer.reduce_colors(16)
+
+        output = renderer.to_string(METHODS[self.method]["class"])
+        yield Text.from_ansi(output, no_wrap=True, end="")

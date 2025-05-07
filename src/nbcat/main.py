@@ -1,18 +1,17 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import Union
 
 import argcomplete
 import requests
 from argcomplete.completers import FilesCompleter
 from pydantic import ValidationError
 from rich import box
-from rich.console import Console, RenderableType
+from rich.console import Console, Group, RenderableType
+from rich.padding import Padding
 from rich.panel import Panel
 from rich.pretty import Pretty
 from rich.syntax import Syntax
-from rich.table import Table
 from rich.text import Text
 
 from . import __version__
@@ -69,7 +68,7 @@ def read_notebook(fp: str, debug: bool = False) -> Notebook:
         raise InvalidNotebookFormatError(f"Invalid notebook: {e}")
 
 
-def render_cell(cell: Cell) -> list[tuple[Union[str, None], RenderableType]]:
+def render_cell(cell: Cell) -> RenderableType:
     """
     Render the content of a notebook cell for display.
 
@@ -86,15 +85,17 @@ def render_cell(cell: Cell) -> list[tuple[Union[str, None], RenderableType]]:
     """
 
     def _render_markdown(input: str) -> Markdown:
-        return Markdown(input)
+        return Markdown(input, code_theme="ansi_dark")
 
-    def _render_code(input: str) -> Panel:
-        return Panel(Syntax(input, "python", theme="ansi_dark"), box=box.SQUARE)
+    def _render_code(input: str, language: str = "python") -> Panel:
+        return Panel(
+            Syntax(input, language, line_numbers=True, theme="ansi_dark", dedent=True), padding=0
+        )
 
     def _render_raw(input: str) -> Text:
         return Text(input)
 
-    def _render_image(input: str) -> None:
+    def _render_image(input: str) -> Image:
         return Image(input)
 
     def _render_json(input: str) -> Pretty:
@@ -111,31 +112,21 @@ def render_cell(cell: Cell) -> list[tuple[Union[str, None], RenderableType]]:
         OutputCellType.JSON: _render_json,
     }
 
-    rows: list[tuple[Union[str, None], RenderableType]] = []
+    rows: list[RenderableType] = []
     renderer = RENDERERS.get(cell.cell_type)
     source = renderer(cell.input) if renderer else None
     if source:
-        label = f"[green][{cell.execution_count}][/]" if cell.execution_count else None
-        rows.append(
-            (
-                label,
-                source,
-            )
-        )
+        rows.append(Padding(source, (1, 0)))
+        if not cell.outputs:
+            return source
 
     for o in cell.outputs:
         if o.output:
             renderer = RENDERERS.get(o.output.output_type)
             output = renderer(o.output.text) if renderer else None
             if output:
-                label = f"[blue][{o.execution_count}][/]" if o.execution_count else None
-                rows.append(
-                    (
-                        label,
-                        output,
-                    )
-                )
-    return rows
+                rows.append(Panel(output, style="italic", box=box.MINIMAL))
+    return Group(*rows)
 
 
 def print_notebook(nb: Notebook):
@@ -149,15 +140,17 @@ def print_notebook(nb: Notebook):
         console.print("[bold red]Notebook contains no cells.")
         return
 
-    layout = Table.grid(padding=1)
-    layout.add_column(no_wrap=True, width=6)
-    layout.add_column()
-
     for cell in nb.cells:
-        for label, content in render_cell(cell):
-            layout.add_row(label, content)
-
-    console.print(layout)
+        rendered = render_cell(cell)
+        if isinstance(rendered, Group):
+            out = Panel(
+                rendered,
+                title=f"[green][{cell.execution_count}][/]" if cell.execution_count else None,
+                title_align="left",
+            )
+        else:
+            out = Padding(rendered, (1, 0))
+        console.print(out)
 
 
 def main():
