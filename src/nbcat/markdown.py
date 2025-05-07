@@ -10,11 +10,16 @@
 
 from __future__ import annotations
 
+import base64
+from pathlib import Path
 from typing import ClassVar
 
+import requests
 from rich import markdown as md
 from rich.console import Console, ConsoleOptions, RenderResult
 from rich.text import Text
+
+from .image import Image
 
 
 class Heading(md.Heading):
@@ -30,6 +35,29 @@ class Heading(md.Heading):
         yield Text(f"{'#' * indent} {self.text}", style=styles.get(self.tag, "dim white"))
 
 
+class ImageItem(md.ImageItem):
+    """Renders a placeholder for an image."""
+
+    def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
+        image_content = None
+        path = Path(self.destination)
+        if path.exists():
+            image_content = path.read_bytes()
+        elif self.destination.startswith("http://") or self.destination.startswith("https://"):
+            try:
+                with requests.Session() as req:
+                    res = req.get(self.destination, timeout=5)
+                    res.raise_for_status()
+                    image_content = res.content
+            except requests.RequestException:
+                return super().__rich_console__(console, options)
+        if image_content:
+            # TODO: This part can be improved by changing Image class to accept file objects
+            image = base64.b64encode(image_content).decode("utf-8")
+            return Image(image).__rich_console__(console, options)
+        return super().__rich_console__(console, options)
+
+
 class Markdown(md.Markdown):
     elements: ClassVar[dict[str, type[md.MarkdownElement]]] = {
         "paragraph_open": md.Paragraph,
@@ -41,7 +69,7 @@ class Markdown(md.Markdown):
         "bullet_list_open": md.ListElement,
         "ordered_list_open": md.ListElement,
         "list_item_open": md.ListItem,
-        "image": md.ImageItem,
+        "image": ImageItem,
         "table_open": md.TableElement,
         "tbody_open": md.TableBodyElement,
         "thead_open": md.TableHeaderElement,
