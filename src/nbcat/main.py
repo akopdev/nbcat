@@ -22,8 +22,8 @@ from .exceptions import (
 )
 from .image import Image
 from .markdown import Markdown
+from .pager import Pager
 from .schemas import Cell, Notebook
-from .viewer import Viewer
 
 console = Console()
 
@@ -167,16 +167,21 @@ def main():
         "file", help="Path or URL to a .ipynb notebook", type=str
     ).completer = FilesCompleter()
     parser.add_argument(
+        "-v",
         "--version",
         help="print version information and quite",
         action="version",
         version=__version__,
     )
     parser.add_argument(
-        "--debug", help="enable extended error output", action="store_true", default=False
+        "-d", "--debug", help="enable extended error output", action="store_true", default=False
     )
     parser.add_argument(
-        "--interactive", help="Run viewer in interactive mode", action="store_true", default=False
+        "-p",
+        "--page",
+        help="enable paginated view mode (similar to less)",
+        action="store_true",
+        default=False,
     )
 
     try:
@@ -190,8 +195,8 @@ def main():
             console.print("[bold red]Notebook contains no cells.")
             return
 
-        if args.interactive:
-            Viewer(objects).run()
+        if args.page:
+            Pager(objects).run()
         else:
             console.print(*objects)
     except Exception as e:

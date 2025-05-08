@@ -8,9 +8,10 @@
 
 ## Features
 
-- Very fast and lightweight with minimal dependencies
-- Preview remote notebooks without downloading them
-- Supports for all Jupyter notebook versions, including old legacy formats
+- Very fast and lightweight with minimal dependencies.
+- Preview remote notebooks without downloading them.
+- Enable paginated view mode with keyboard navigation (similar to `less`).
+- Supports for all Jupyter notebook versions, including old legacy formats.
 
 ## Motivation
 
