@@ -6,7 +6,6 @@ import argcomplete
 import requests
 from argcomplete.completers import FilesCompleter
 from pydantic import ValidationError
-from rich import box
 from rich.console import Console, Group, RenderableType
 from rich.padding import Padding
 from rich.panel import Panel
@@ -87,10 +86,8 @@ def render_cell(cell: Cell) -> RenderableType:
     def _render_markdown(input: str) -> Markdown:
         return Markdown(input, code_theme="ansi_dark")
 
-    def _render_code(input: str, language: str = "python") -> Panel:
-        return Panel(
-            Syntax(input, language, line_numbers=True, theme="ansi_dark", dedent=True), padding=0
-        )
+    def _render_code(input: str, language: str = "python") -> Syntax:
+        return Syntax(input, language, theme="ansi_dark", padding=(1, 2), dedent=True)
 
     def _render_raw(input: str) -> Text:
         return Text(input)
@@ -116,16 +113,25 @@ def render_cell(cell: Cell) -> RenderableType:
     renderer = RENDERERS.get(cell.cell_type)
     source = renderer(cell.input) if renderer else None
     if source:
-        rows.append(Padding(source, (1, 0)))
+        s_title = f"[green]In [{cell.execution_count}][/]" if cell.execution_count else None
+        if s_title:
+            rows.append(Panel(source, title=s_title, title_align="left"))
+        else:
+            rows.append(Padding(source, (1, 0)))
+
         if not cell.outputs:
-            return source
+            return rows.pop()
 
     for o in cell.outputs:
+        o_title = f"[blue]Out [{o.execution_count}][/]" if o.execution_count else None
         if o.output:
             renderer = RENDERERS.get(o.output.output_type)
             output = renderer(o.output.text) if renderer else None
             if output:
-                rows.append(Panel(output, style="italic", box=box.MINIMAL))
+                if o_title:
+                    rows.append(Panel(output, style="italic", title=o_title, title_align="left"))
+                else:
+                    rows.append(Padding(output, (1, 0), style="italic"))
     return Group(*rows)
 
 
@@ -142,15 +148,7 @@ def print_notebook(nb: Notebook):
 
     for cell in nb.cells:
         rendered = render_cell(cell)
-        if isinstance(rendered, Group):
-            out = Panel(
-                rendered,
-                title=f"[green][{cell.execution_count}][/]" if cell.execution_count else None,
-                title_align="left",
-            )
-        else:
-            out = Padding(rendered, (1, 0))
-        console.print(out)
+        console.print(rendered)
 
 
 def main():

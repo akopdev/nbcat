@@ -1,27 +1,7 @@
-import pytest
-from rich.console import Group, RenderableType
-from rich.markdown import Markdown
-from rich.panel import Panel
-from rich.text import Text
+from rich.console import Group
 
 from nbcat.main import render_cell
 from nbcat.schemas import Cell, StreamOutput
-
-
-@pytest.mark.parametrize(
-    "cell_type,source,expected",
-    [
-        ("markdown", "# Heading", Markdown),
-        ("code", "print('Hello')", Panel),
-        ("raw", "Raw content", Text),
-        ("heading", "Heading text", Markdown),
-    ],
-)
-def test_render_cell_input_rendering(cell_type: str, source: str, expected: RenderableType):
-    cell = Cell(cell_type=cell_type, source=source, execution_count=42, outputs=[])
-    rendered = render_cell(cell)
-
-    assert isinstance(rendered, expected)
 
 
 def test_render_cell_with_outputs():
