@@ -23,6 +23,7 @@ from .exceptions import (
 from .image import Image
 from .markdown import Markdown
 from .schemas import Cell, Notebook
+from .viewer import Viewer
 
 console = Console()
 
@@ -135,20 +136,26 @@ def render_cell(cell: Cell) -> RenderableType:
     return Group(*rows)
 
 
-def print_notebook(nb: Notebook):
+def render_notebook(nb: Notebook) -> list[RenderableType]:
     """
-    Print the notebook to the console with formatted cell inputs and outputs.
+    Convert a Notebook object into a list of rich renderables for terminal display.
+
+    Each cell in the notebook is processed and rendered using `render_cell`,
+    producing a sequence of styled input/output blocks suitable for use in a
+    Textual or Rich-based terminal UI.
 
     Args:
-        nb (Notebook): A Notebook object containing a list of cells.
-    """
-    if not nb.cells:
-        console.print("[bold red]Notebook contains no cells.")
-        return
+        nb (Notebook): The notebook object containing parsed cells (e.g., from a .ipynb file).
 
+    Returns
+    -------
+        list[RenderableType]: A list of rich renderable objects representing the notebook cells.
+                              Returns an empty list if the notebook has no cells.
+    """
+    rendered: list[RenderableType] = []
     for cell in nb.cells:
-        rendered = render_cell(cell)
-        console.print(rendered)
+        rendered.append(render_cell(cell))
+    return rendered
 
 
 def main():
@@ -168,12 +175,25 @@ def main():
     parser.add_argument(
         "--debug", help="enable extended error output", action="store_true", default=False
     )
+    parser.add_argument(
+        "--interactive", help="Run viewer in interactive mode", action="store_true", default=False
+    )
 
     try:
         argcomplete.autocomplete(parser)
         args = parser.parse_args()
+
         notebook = read_notebook(args.file, debug=args.debug)
-        print_notebook(notebook)
+        objects = render_notebook(notebook)
+
+        if not objects:
+            console.print("[bold red]Notebook contains no cells.")
+            return
+
+        if args.interactive:
+            Viewer(objects).run()
+        else:
+            console.print(*objects)
     except Exception as e:
         sys.exit(f"nbcat: {e}")
 
