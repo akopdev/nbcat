@@ -4,6 +4,7 @@
 
 <p align="center">
   <a href="docs/screenshot.png" target="blank"><img src="docs/screenshot.png" width="400" /></a>
+  <a href="docs/screenshot2.png" target="blank"><img src="docs/screenshot2.png" width="400" /></a>
 </p>
 
 ## Features
@@ -11,6 +12,7 @@
 - Very fast and lightweight with minimal dependencies.
 - Preview remote notebooks without downloading them.
 - Enable paginated view mode with keyboard navigation (similar to `less`).
+- Supports image rendering (some protocols in beta)
 - Supports for all Jupyter notebook versions, including old legacy formats.
 
 ## Motivation
