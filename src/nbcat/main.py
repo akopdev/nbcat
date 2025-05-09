@@ -5,6 +5,7 @@ from pathlib import Path
 import argcomplete
 import requests
 from argcomplete.completers import FilesCompleter
+from markdownify import markdownify
 from pydantic import ValidationError
 from rich.console import Console, Group, RenderableType
 from rich.padding import Padding
@@ -85,7 +86,7 @@ def render_cell(cell: Cell) -> RenderableType:
     """
 
     def _render_markdown(input: str) -> Markdown:
-        return Markdown(input, code_theme="ansi_dark")
+        return Markdown(markdownify(input), code_theme="ansi_dark")
 
     def _render_code(input: str, language: str = "python") -> Syntax:
         return Syntax(input, language, theme="ansi_dark", padding=(1, 2), dedent=True)

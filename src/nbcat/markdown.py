@@ -41,16 +41,17 @@ class ImageItem(md.ImageItem):
     def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
         image_content = None
         path = Path(self.destination)
-        if path.exists():
-            image_content = path.read_bytes()
-        elif self.destination.startswith("http://") or self.destination.startswith("https://"):
-            try:
-                with requests.Session() as req:
-                    res = req.get(self.destination, timeout=5)
-                    res.raise_for_status()
-                    image_content = res.content
-            except requests.RequestException:
-                return super().__rich_console__(console, options)
+        if path.suffix in [".png", ".jpeg", ".jpg"]:
+            if path.exists():
+                image_content = path.read_bytes()
+            elif self.destination.startswith("http://") or self.destination.startswith("https://"):
+                try:
+                    with requests.Session() as req:
+                        res = req.get(self.destination, timeout=5)
+                        res.raise_for_status()
+                        image_content = res.content
+                except requests.RequestException:
+                    return super().__rich_console__(console, options)
         if image_content:
             # TODO: This part can be improved by changing Image class to accept file objects
             image = base64.b64encode(image_content).decode("utf-8")
