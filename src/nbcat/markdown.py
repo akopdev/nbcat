@@ -19,7 +19,7 @@ from rich import markdown as md
 from rich.console import Console, ConsoleOptions, RenderResult
 from rich.text import Text
 
-from .image import Image
+from nbcat.image import Image
 
 
 class Heading(md.Heading):

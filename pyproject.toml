@@ -28,6 +28,7 @@ dev = [
     "pytest-responses",
     "pytest-mock",
     "pytest-cov",
+    "pyinstaller"
 ]
 
 [project.urls]

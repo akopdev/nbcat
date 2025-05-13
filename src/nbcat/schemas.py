@@ -2,8 +2,8 @@ from typing import Any, Union
 
 from pydantic import BaseModel, computed_field, model_validator
 
-from .enums import CellType, OutputCellType, OutputType
-from .exceptions import InvalidNotebookFormatError
+from nbcat.enums import CellType, OutputCellType, OutputType
+from nbcat.exceptions import InvalidNotebookFormatError
 
 
 class BaseOutput(BaseModel):

@@ -14,17 +14,17 @@ from rich.pretty import Pretty
 from rich.syntax import Syntax
 from rich.text import Text
 
-from . import __version__
-from .enums import CellType, OutputCellType
-from .exceptions import (
+from nbcat import __version__
+from nbcat.enums import CellType, OutputCellType
+from nbcat.exceptions import (
     InvalidNotebookFormatError,
     NotebookNotFoundError,
     UnsupportedNotebookTypeError,
 )
-from .image import Image
-from .markdown import Markdown
-from .pager import Pager
-from .schemas import Cell, Notebook
+from nbcat.image import Image
+from nbcat.markdown import Markdown
+from nbcat.pager import Pager
+from nbcat.schemas import Cell, Notebook
 
 console = Console()
 
