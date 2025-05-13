@@ -79,4 +79,6 @@ jobs:
           commit_email: devnull@akop.dev
           update_readme_table: true
           formula_includes: 'include Language::Python::Virtualenv'
-          depends_on: '"python@3.13"'
+          depends_on: |
+            "python@3.13"
+            "pillow"
