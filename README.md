@@ -47,11 +47,35 @@ You can pass URLs as well.
 ```bash
 $ nbcat https://raw.githubusercontent.com/akopdev/nbcat/refs/heads/main/tests/assets/test4.ipynb
 ```
+In most cases system `less` will break images rendering. You can use an internal pager instead:
 
-Example use case with `fzf` command that lists all `.ipynb` files and uses `nbcat` for previewing them:
+```bash
+$ nbcat notebook.ipynb --page
+```
+## Integrations
+
+`nbcat` is designed to integrate seamlessly with other tools. Here are a few examples of how easily it can be done.
+
+### FZF (Fuzzy finder)
+
+List all `.ipynb` files and use `nbcat` to preview them:
 
 ```bash
 find . -type f -name "*.ipynb" | fzf --preview 'nbcat {}'
+```
+
+### Ranger
+To enable previews in Ranger, add the `ipynb` extension to the `handle_extension` function in `~/.config/ranger/scope.sh`:
+
+```bash 
+...
+
+handle_extension() {
+    case "${FILE_EXTENSION_LOWER}" in
+        ipynb)
+            nbcat "${FILE_PATH}" && exit 5
+            exit 1;;
+        ...
 ```
 
 ## Testing & Development
