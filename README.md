@@ -12,7 +12,7 @@
 - Very fast and lightweight with minimal dependencies.
 - Preview remote notebooks without downloading them.
 - Enable paginated view mode with keyboard navigation (similar to `less`).
-- Supports image rendering (some protocols in beta)
+- Supports image rendering in high resolution
 - Supports for all Jupyter notebook versions, including old legacy formats.
 
 ## Motivation

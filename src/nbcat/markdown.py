@@ -10,7 +10,6 @@
 
 from __future__ import annotations
 
-import base64
 from pathlib import Path
 from typing import ClassVar
 
@@ -19,7 +18,7 @@ from rich import markdown as md
 from rich.console import Console, ConsoleOptions, RenderResult
 from rich.text import Text
 
-from .image import Image
+from .image import render_image
 
 
 class Heading(md.Heading):
@@ -53,9 +52,7 @@ class ImageItem(md.ImageItem):
                 except requests.RequestException:
                     return super().__rich_console__(console, options)
         if image_content:
-            # TODO: This part can be improved by changing Image class to accept file objects
-            image = base64.b64encode(image_content).decode("utf-8")
-            return Image(image).__rich_console__(console, options)
+            return render_image(image_content).__rich_console__(console, options)
         return super().__rich_console__(console, options)
 
 
