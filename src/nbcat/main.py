@@ -1,4 +1,5 @@
 import argparse
+import base64
 import sys
 from pathlib import Path
 
@@ -14,6 +15,8 @@ from rich.pretty import Pretty
 from rich.syntax import Syntax
 from rich.text import Text
 
+from nbcat.image import render_image
+
 from . import __version__
 from .enums import CellType, OutputCellType
 from .exceptions import (
@@ -21,7 +24,6 @@ from .exceptions import (
     NotebookNotFoundError,
     UnsupportedNotebookTypeError,
 )
-from .image import Image
 from .markdown import Markdown
 from .pager import Pager
 from .schemas import Cell, Notebook
@@ -94,8 +96,8 @@ def render_cell(cell: Cell) -> RenderableType:
     def _render_raw(input: str) -> Text:
         return Text(input)
 
-    def _render_image(input: str) -> Image:
-        return Image(input)
+    def _render_image(input: str) -> RenderableType:
+        return render_image(base64.b64decode(input.replace("\n", "")))
 
     def _render_json(input: str) -> Pretty:
         return Pretty(input)

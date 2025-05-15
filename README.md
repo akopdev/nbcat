@@ -1,6 +1,6 @@
-# nbcat
+<h1 align="center">nbcat: Jupyter notebooks viewer</h1>
 
-`nbcat` let you preview Jupyter notebooks directly in your terminal. Think of it as `cat`, but for `.ipynb` files.
+[nbcat](https://github.com/akopdev/nbcat) let you preview Jupyter notebooks directly in your terminal. Think of it as `cat`, but for `.ipynb` files.
 
 <p align="center">
   <a href="docs/screenshot.png" target="blank"><img src="docs/screenshot.png" width="400" /></a>
@@ -12,7 +12,7 @@
 - Very fast and lightweight with minimal dependencies.
 - Preview remote notebooks without downloading them.
 - Enable paginated view mode with keyboard navigation (similar to `less`).
-- Supports image rendering (some protocols in beta)
+- Supports image rendering in high resolution
 - Supports for all Jupyter notebook versions, including old legacy formats.
 
 ## Motivation
@@ -28,12 +28,12 @@ Please note, that `nbcat` doesn't aim to replace JupyterLab. If you need a full-
 ## Installation
 
 ```bash
-# Install from PyPI
-pip install nbcat
+# Install from PyPI (recommended)
+$ pip install nbcat
 
 # Install via Homebrew
-brew tab akopdev/formulas/nbcat
-brew install nbcat
+$ brew tab akopdev/formulas/nbcat
+$ brew install nbcat
 ```
 
 ## Quickstart
@@ -47,7 +47,7 @@ You can pass URLs as well.
 ```bash
 $ nbcat https://raw.githubusercontent.com/akopdev/nbcat/refs/heads/main/tests/assets/test4.ipynb
 ```
-In most cases system `less` will break images rendering. You can use an internal pager instead:
+In most cases system `less` will render images in low resolution. Consider using an internal pager instead:
 
 ```bash
 $ nbcat notebook.ipynb --page

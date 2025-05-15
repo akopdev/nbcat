@@ -1,6 +1,6 @@
 [project]
 name = "nbcat"
-version = "0.13.2"
+version = "1.0.0"
 description = "cat for jupyter notebooks"
 authors = [
     { name = "Akop Kesheshyan", email = "devnull@akop.dev" }
@@ -10,15 +10,15 @@ maintainers = [
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "argcomplete",
-    "requests",
+    "markdownify",
     "pydantic",
+    "requests",
     "rich",
-    "timg",
     "textual",
-    "markdownify"
+    "textual-image[textual]",
 ]
 
 [project.optional-dependencies]

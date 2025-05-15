@@ -1,31 +1,26 @@
-import base64
 import shutil
 from io import BytesIO
-from platform import system
 
 from PIL import Image as PilImage
-from rich.console import Console, ConsoleOptions, RenderResult
-from rich.text import Text
-from timg import METHODS, Renderer
+from textual_image.renderable import Image
+from textual_image.renderable.halfcell import Image as HalfcellImage
+from textual_image.renderable.sixel import Image as SixelImage
+from textual_image.renderable.tgp import Image as TGPImage
+from textual_image.renderable.unicode import Image as UnicodeImage
 
 
-class Image:
-    def __init__(self, image: str, method: str = "a24h"):
-        img = BytesIO(base64.b64decode(image.replace("\n", "")))
-        self.image = PilImage.open(img)
-        self.method = method if system() != "Windows" else "ascii"
+def render_image(image_content: bytes) -> TGPImage | SixelImage | HalfcellImage | UnicodeImage:
+    """
+    Render an image from raw byte content and adjusts it to fit the terminal width.
 
-    def __rich_console__(self, console: Console, options: ConsoleOptions) -> RenderResult:
-        renderer = Renderer()
-        renderer.load_image(self.image)
-        width = shutil.get_terminal_size()[0] - 1
-        if self.method == "sixel":
-            width = width * 6
+    Args:
+        image_content (bytes): The raw byte content of the image.
 
-        renderer.resize(width)
-
-        if self.method == "sixel":
-            renderer.reduce_colors(16)
-
-        output = renderer.to_string(METHODS[self.method]["class"])
-        yield Text.from_ansi(output, no_wrap=True, end="")
+    Returns
+    -------
+        TGPImage | SixelImage | HalfcellImage | UnicodeImage: A terminal-compatible image
+        object adjusted to the current terminal width.
+    """
+    image = PilImage.open(BytesIO(image_content))
+    width = min(image.size[0], shutil.get_terminal_size()[0])
+    return Image(image, width=width, height="auto")
