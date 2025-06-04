@@ -33,7 +33,7 @@ $ pip install nbcat
 
 # Install via Homebrew
 $ brew tab akopdev/formulas/nbcat
-$ brew install nbcat
+$ brew install --formula nbcat
 ```
 
 ## Quickstart
